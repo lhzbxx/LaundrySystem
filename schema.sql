@@ -8,18 +8,6 @@ create table user (
     time integer not null
 );
 
-drop table if exists order;
-create table order (
-    id integer primary key autoincrement,
-    userid integer not null,
-    list text not null,
-    note text,
-    comment text,
-    time integer not null,
-    deliver text not null,
-    pickup text not null
-);
-
 drop table if exists goods;
 create table goods (
     id integer primary key autoincrement,
@@ -35,4 +23,18 @@ create table advice (
     contact text,
     content text not null,
     time integer not null
+);
+
+drop table if exists cart;
+create table cart (
+    id integer primary key autoincrement,
+    userid integer not null,
+    list text not null,
+    note text,
+    comment text,
+    time integer not null,
+    deliver text not null,
+    pickup text not null,
+    dtime integer not null,
+    ptime integer not null
 );

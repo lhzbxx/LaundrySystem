@@ -1,0 +1,58 @@
+{% extends "dashboard.html" %}
+{% block body %}
+    <div class="page-header">
+        <h1><b>活动</b> <small>>>> News, Events and Suprise.</small></h1>
+    </div>
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs visible-xs-block" id="event" role="tablist">
+      <li role="presentation" class="active"><a href="#sign" role="tab" data-toggle="tab"><h4><b>Sign <span class="glyphicon glyphicon-pencil hidden-xs"></span></b></h4></a></li>
+      <li role="presentation"><a href="#lotto" role="tab" data-toggle="tab"><h4><b>Lotto <span class="glyphicon glyphicon-heart-empty hidden-xs"></span></b></h4></a></li>
+      <li role="presentation"><a href="#shop" role="tab" data-toggle="tab"><h4><b>Shop <span class="glyphicon glyphicon-shopping-cart hidden-xs"></span></b></h4></a></li>
+    </ul>
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs hidden-xs" id="event" role="tablist">
+      <li role="presentation" class="active"><a href="#sign" role="tab" data-toggle="tab"><h4><b>每日签到 <span class="glyphicon glyphicon-pencil hidden-xs"></span></b></h4></a></li>
+      <li role="presentation"><a href="#lotto" role="tab" data-toggle="tab"><h4><b>菠菜区 <span class="glyphicon glyphicon-heart-empty hidden-xs"></span></b></h4></a></li>
+      <li role="presentation"><a href="#shop" role="tab" data-toggle="tab"><h4><b>道具商城 <span class="glyphicon glyphicon-shopping-cart hidden-xs"></span></b></h4></a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane fade active in" id="sign">
+        <div class="jumbotron" align="center" background="black">
+            <h1><b>每日抽奖</b></h1>
+            <h3>快来测试测试你的人品。</h3>
+            {% if success%}
+                <a type="button" href="{{ url_for('signActivity') }}" id="signin" class="btn btn-default btn-lg" data-toggle="popover" data-trigger="focus" title="恭喜~" data-placement="top" data-content="{{ success }}">抽抽抽！</a>
+            {% elif error %}
+                <a type="button" href="{{ url_for('signActivity') }}" id="signin" class="btn btn-default btn-lg" data-toggle="popover" data-trigger="focus" title="警告！" data-placement="top" data-content="{{ error }}">抽抽抽！</a>
+            {% else %}
+                <a type="button" href="{{ url_for('signActivity') }}" id="signin" class="btn btn-default btn-lg">抽抽抽！</a>
+            {% endif %}
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="lotto">
+        <div class="jumbotron" align="center" background="black">
+            <h1><b>菠菜区</b></h1>
+            <h3>博彩有风险，下注需谨慎。</h3>
+            <button type="button" onclick="alert('施工中......');" action class="btn btn-default btn-lg" data-toggle="modal" data-target="#postOrder">查看</button>
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="shop">
+        <div class="jumbotron" align="center" background="black">
+            <h1><b>道具商城</b></h1>
+            <h3>前排兜售改名卡、称号卡、置顶卡、差评消除卡。</h3>
+            <button type="button" onclick="alert('施工中......');" action class="btn btn-default btn-lg" data-toggle="modal" data-target="#postOrder">剁手</button>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+        $('#event a#sign').tab('show');
+        $('li#menu_list_ea').addClass("active");
+        {% if success or error %}
+            $('#signin').popover('show');
+        {% endif %}
+    </script>
+{% endblock %}

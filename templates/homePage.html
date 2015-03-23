@@ -1,0 +1,213 @@
+{% extends "dashboard.html" %}
+{% block body %}
+  <div class="page-header">
+      <h1><b>主页</b> <small>>>> BirdView of Yourself.</small></h1>
+  </div>
+
+  <ul class="nav nav-tabs visible-xs-block" id="my_gp" role="tablist">
+    <li role="presentation" class="active"><a href="#my_g" id="g_tab" role="tab" data-toggle="tab"><h4><b>Post <span class="glyphicon glyphicon-tags hidden-xs"></span></b></h4></a></li>
+    <li role="presentation"><a href="#my_p" id="p_tab" role="tab" data-toggle="tab"><h4><b>Get <span class="glyphicon glyphicon-briefcase hidden-xs"></span></b></h4></a></li>
+    <li role="presentation"><a href="#my_y" id="y_tab" role="tab" data-toggle="tab"><h4><b>Deal <span class="glyphicon glyphicon-record hidden-xs"></span></b></h4></a></li>
+  </ul>
+
+  <ul class="nav nav-tabs hidden-xs" id="my_gp" role="tablist">
+    <li role="presentation" class="active"><a href="#my_g" id="g_tab" role="tab" data-toggle="tab"><h4><b>我的委托 <span class="glyphicon glyphicon-tags hidden-xs"></span></b></h4></a></li>
+    <li role="presentation"><a href="#my_p" id="p_tab" role="tab" data-toggle="tab"><h4><b>我的接单 <span class="glyphicon glyphicon-briefcase hidden-xs"></span></b></h4></a></li>
+    <li role="presentation"><a href="#my_y" id="y_tab" role="tab" data-toggle="tab"><h4><b>待评价委托 <span class="glyphicon glyphicon-record hidden-xs"></span></b></h4></a></li>
+  </ul>
+
+  <div id="my_gp_content" class="tab-content">
+    <div role="tabpanel" class="tab-pane fade active in" id="my_g" aria-labelledby="g_tab">
+      {% for order in post_orders %}
+        {% if order.state == 0 %}
+          <div class="panel panel-success">
+        {% elif order.state == 1 %}
+          <div class="panel panel-warning">
+        {% else %}
+          <div class="panel panel-default">
+        {% endif %}
+        <div class="panel-heading">
+          投条人：{% if order.is_anonymity == 0 %}{{ order.username }}（<span class="hidden-xs">信誉度：</span>{{ user.honor }}）
+          {% else %}匿名({{ user.honor }})
+          {% endif %}
+          &nbsp;&nbsp;&nbsp;时间：{{ order.time }}
+          &nbsp;&nbsp;&nbsp;地点：{{ order.position }}
+          <div class="pull-right">
+          赏金：{{ order.nicecard }}
+          </div>
+        </div>
+          <div class="panel-body">
+            {% if order.content[30] %}
+            <span style="cursor:pointer;" onclick="$('.{{order.id}}all_content').slideToggle();">
+              <h4 class="{{order.id}}all_content">{{ order.content[:25] }}…… <span class="label label-primary">显示全部</span></h4>
+            </span>
+            <h5 class="{{order.id}}all_content" style="display: none">{{ order.content }}</h5>
+            {% else %}
+            <h4>{{ order.content }}</h4>
+            {% endif %}
+          </div>
+          <div class="panel-footer">
+            <span class="hidden-xs">状态：</span>
+            {% if order.state == 0 %}
+              未接单
+            {% elif order.state == 1 %}
+              执行中
+            {% else %}
+              已完成
+            {% endif %}
+            <div class="pull-right">
+              <span class="hidden-xs">操作：</span>
+              <a class='label label-default qrcode' id="{{ order.id }}" data-toggle="popover" data-placement="bottom" title="二维码 - QRcode" data-html="true" data-trigger="hover" data-content='<img onload="" alt="二维码加载失败！" src="http://qr.3sd.me/qr?chl=http://59.78.46.141/deal/{{ order.id }}&chs=250x250" />'><span class='glyphicon glyphicon-qrcode'></span> 二维码</a>&nbsp;&nbsp;&nbsp;
+              <a class='label label-danger'><span class='glyphicon glyphicon-trash'></span> 删除</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div role="tabpanel" class="tab-pane fade" id="my_p" aria-labelledby="p_tab">
+      {% for order in get_orders %}
+        {% if order.state == 0 %}
+          <div class="panel panel-success">
+        {% elif order.state == 1 %}
+          <div class="panel panel-warning">
+        {% else %}
+          <div class="panel panel-default">
+        {% endif %}
+        <div class="panel-heading">
+          投条人：{% if order.is_anonymity == 0 %}{{ order.username }}（<span class="hidden-xs">信誉度：</span>{{ user.honor }}）
+          {% else %}匿名({{ user.honor }})
+          {% endif %}
+          &nbsp;&nbsp;&nbsp;时间：{{ order.time }}
+          &nbsp;&nbsp;&nbsp;地点：{{ order.position }}
+          <div class="pull-right">
+          赏金：{{ order.nicecard }}
+          </div>
+        </div>
+          <div class="panel-body">
+            {% if order.content[30] %}
+            <span style="cursor:pointer;" onclick="$('.{{order.id}}all_content').slideToggle();">
+              <h4 class="{{order.id}}all_content">{{ order.content[:25] }}…… <span class="label label-primary">显示全部</span></h4>
+            </span>
+            <h5 class="{{order.id}}all_content" style="display: none">{{ order.content }}</h5>
+            {% else %}
+            <h4>{{ order.content }}</h4>
+            {% endif %}
+          </div>
+          <div class="panel-footer">
+            <span class="hidden-xs">状态：</span>
+            {% if order.state == 0 %}
+              未接单
+            {% elif order.state == 1 %}
+              执行中
+            {% else %}
+              已完成
+            {% endif %}
+            <div class="pull-right">
+              <span class="hidden-xs">操作：</span>
+              <a href="" data-toggle="modal" data-target="#letter{{ order.id }}" class='label label-info'><span class='glyphicon glyphicon-envelope'></span> 私信</a>
+            </div>
+          </div>
+        </div>
+      <form method="post" action="{{ url_for('letter', post_id=order.id) }}">
+        <div class="modal fade" id="letter{{ order.id }}" tabindex="-1" role="dialog" aria-labelledby="letter{{ order.id }}Modal" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+                <h4 class="modal-title" id="letter{{ order.id }}Modal">发送私信</h4>
+              </div>
+              <div class="modal-body">
+                <textarea name="content" class="form-control" style="resize: None" rows="3" placeholder="请输入......"></textarea>
+              </div>
+              <div class="modal-footer">
+                <input type="submit" class="btn btn-success" value="发送" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      {% endfor %}
+    </div>
+
+    <div role="tabpanel" class="tab-pane fade" id="my_y" aria-labelledby="y_tab">
+      {% for order in deal_orders %}
+        {% if order.state == 0 %}
+          <div class="panel panel-success">
+        {% elif order.state == 1 %}
+          <div class="panel panel-warning">
+        {% else %}
+          <div class="panel panel-default">
+        {% endif %}
+        <div class="panel-heading">
+          投条人：{% if order.is_anonymity == 0 %}{{ order.username }}（<span class="hidden-xs">信誉度：</span>{{ user.honor }}）
+          {% else %}匿名({{ user.honor }})
+          {% endif %}
+          &nbsp;&nbsp;&nbsp;时间：{{ order.time }}
+          &nbsp;&nbsp;&nbsp;地点：{{ order.position }}
+          <div class="pull-right">
+          赏金：{{ order.nicecard }}
+          </div>
+        </div>
+          <div class="panel-body">
+            {% if order.content[30] %}
+            <span style="cursor:pointer;" onclick="$('.{{order.id}}all_content').slideToggle();">
+              <h4 class="{{order.id}}all_content">{{ order.content[:25] }}…… <span class="label label-primary">显示全部</span></h4>
+            </span>
+            <h5 class="{{order.id}}all_content" style="display: none">{{ order.content }}</h5>
+            {% else %}
+            <h4>{{ order.content }}</h4>
+            {% endif %}
+          </div>
+          <div class="panel-footer">
+            <span class="hidden-xs">状态：</span>
+            {% if order.state == 0 %}
+              未接单
+            {% elif order.state == 1 %}
+              执行中
+            {% else %}
+              已完成
+            {% endif %}&nbsp;&nbsp;&nbsp;
+            <span class="hidden-xs">接单人：</span>{{ order.dealername }}
+            <div class="pull-right">
+              <span class="hidden-xs">操作：</span>
+              <a href="" data-toggle="modal" data-target="#letter{{ order.id }}" class='label label-info'><span class='glyphicon glyphicon-envelope'></span> 私信</a>&nbsp;&nbsp;
+              <a href="finish/{{ order.id }}/1" class='label label-success'><span class='glyphicon glyphicon-thumbs-up'></span> 好评</a>&nbsp;&nbsp;
+              <a href="finish/{{ order.id }}/2" class='label label-default'><span class='glyphicon glyphicon-check'></span> 中评</a>&nbsp;&nbsp;
+              <a href="finish/{{ order.id }}/3" class='label label-danger'><span class='glyphicon glyphicon-thumbs-down'></span> 差评</a>&nbsp;&nbsp;
+            </div>
+          </div>
+        </div>
+      <form method="post" action="{{ url_for('letter_deal', post_id=order.id) }}">
+        <div class="modal fade" id="letter{{ order.id }}" tabindex="-1" role="dialog" aria-labelledby="letter{{ order.id }}Modal" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+                <h4 class="modal-title" id="letter{{ order.id }}Modal">发送私信</h4>
+              </div>
+              <div class="modal-body">
+                <textarea name="content" class="form-control" style="resize: None" rows="3" placeholder="请输入......"></textarea>
+              </div>
+              <div class="modal-footer">
+                <input type="submit" class="btn btn-success" value="发送" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $('li#menu_list_hp').addClass("active");
+    // $('.tttshow').tooltip()
+    $('#my_gp a#my_g').tab('show')
+    $(document).ready(
+      function(){
+        $(".qrcode").popover('show');
+        $(".qrcode").popover('hide');
+    });
+  </script>
+{% endblock %}

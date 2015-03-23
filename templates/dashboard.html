@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>{{ session['username'] }} - 万事屋</title>
+  <script>
+    document.write("<div id='loading' style='z-index:1035;padding:5px 0 5px 9px;background:#c44;left:0;top:0;width:90px;color:#fff;position:fixed;'>正在加载...</div>")
+    setTimeout("document.getElementById('loading').innerHTML = '加载失败，网络错误！';", 3000)
+  </script>
+  <style type="text/css">
+    .navbar-header {
+      padding-left: 100px;
+      min-width: 300px;
+    }
+    #PAGE {
+      padding-top: 55px;
+    }
+  </style>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap-theme.min.css') }}">
+  <script type="text/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+
+  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="">万事屋</a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu_list">
+          <span class="sr-only">菜单项</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="menu_list">
+        <ul class="nav navbar-nav">
+          <li id="menu_list_hp">
+            <a href="{{ url_for('homePage') }}"><span class="glyphicon glyphicon-home"></span> 主页</a>
+          </li>
+          <li id="menu_list_po">
+            <a href="{{ url_for('postOrder') }}"><span class="glyphicon glyphicon-send"></span> 投条</a>
+          </li>
+          <li id="menu_list_go">
+            <a href="{{ url_for('getOrder') }}"><span class="glyphicon glyphicon-list-alt"></span> 接单</a>
+          </li>
+          <li id="menu_list_ea">
+            <a href="{{ url_for('eventActivity') }}"><span class="glyphicon glyphicon-star"></span> 活动</a>
+          </li>
+          <li id="menu_list_ps">
+            <a href="{{ url_for('personalSetting') }}"><span class="glyphicon glyphicon-cog"></span> 设定</a>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" onclick="$('#newMsg').popover('destroy');" class="dropdown-toggle" data-toggle="dropdown"><span  data-toggle="popover" data-placement="bottom" data-trigger="manual" title="新消息！" data-content="你收到了新消息~" id="newMsg"> 个人账号：{{ session['username'] }}</span><span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+              <li data-toggle="modal" data-target="#notifi"><a href="#"><span class="glyphicon glyphicon-bell"></span> 个人通知 <span class="badge" id="notifiBadge">{{ user['noticenum'] }}</span></a></li>
+              <li data-toggle="modal" data-target="#draft"><a href="#"><span class="glyphicon glyphicon-book"></span> 草稿本</a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-floppy-remove"></span> 垃圾筒</a></li>
+              <li data-toggle="modal" data-target="#camera"><a href="#"><span class="glyphicon glyphicon-camera"></span> 快速接单</a></li>
+              <li class="divider"></li>
+              <li><a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> 好人卡 <span class="badge">{{ user['nicecard'] }}</span></a></li>
+              <li><a href="#"><span class="glyphicon glyphicon-heart"></span> 信誉度 <span class="badge">{{ user['honor'] }}</span></a></li>
+              <li class="divider"></li>
+              <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-off"></span> 退出</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="col-md-8 col-md-offset-2" id="PAGE">
+      {% block body %}{% endblock %}
+    </div>
+  </div>
+
+  <div class="modal fade" id="draft" tabindex="-1" role="dialog" aria-labelledby="draftModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+          <h4 class="modal-title" id="draftModal">草稿本 - 记录单子</h4>
+        </div>
+        <div class="modal-body">
+          <textarea class="form-control" style="resize: None" rows="3" placeholder="这里是空的。"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-success" data-dismiss="modal">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="notifi" tabindex="-1" role="dialog" aria-labelledby="notifiModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+          <h4 class="modal-title" id="notifiModal">个人通知</h4>
+        </div>
+        <div class="modal-body">
+          <ul class="list-group" id="ulMsg">
+            {% if user['notification'] %}
+              {% for noti in user['notification'] %}
+                {% if noti %}
+                <li class="list-group-item">{{ noti }}</li>
+                {% endif %}
+              {% endfor %}
+              {% else %}
+                <li class="list-group-item">空。</li>
+            {% endif %}
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+          <a href="{{ url_for('clearNotification') }}" type="button" class="btn btn-primary">清除</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="camera" tabindex="-1" role="dialog" aria-labelledby="draftModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+          <h4 class="modal-title" id="draftModal">快速接单 - 扫描二维码</h4>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    
+  </footer>
+  <!--
+  <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+  <script src="http://cdn.bootcss.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  -->
+  <script type="text/javascript">
+    $(document).ready(function() {
+        $("li.menu_list_items").click(function() {
+          $("li.menu_list_items").removeClass("active");
+          $(this).addClass("active");
+          $("#menu_list").removeClass("in");
+        });
+    });
+  </script>
+  <script>
+    $(document).ready(
+      function(){
+        document.getElementById('loading').innerHTML = "加载完成！";
+        setTimeout("$('#loading').slideToggle();", 1000);
+    });
+    $(function(){
+      var num = {{ user.noticenum }};
+      setInterval(function() {
+        $.get("{{ url_for('refresh') }}", function(result) {
+          if (result["num"] > num) {
+            num = result["num"];
+            $('#newMsg').popover('show');
+            $('#ulMsg').prepend('<li class="list-group-item"><b>NEW!</b>&nbsp;&nbsp;&nbsp;'+result["value"]+'</li>')
+            $('#notifiBadge').html(num);
+          };
+        });
+      }, 3000); 
+      // 10秒等待
+    }); 
+  </script>

@@ -1,0 +1,125 @@
+{% extends "dashboard.html" %}
+{% block body %}
+  <div class="page-header">
+    <h1><b>接单</b> <small>>>> Do one thing good daily.</small></h1>
+  </div>
+  <div class="row">
+    <div class="col-xs-10 col-sm-2 col-md-4 col-lg-4 pull-left">
+      {% if error %}
+        <div class="alert alert-danger" role="alert">
+          <p><strong>Error: </strong>{{ error }}</p>
+        </div>
+      {% endif %}
+      {% if success %}
+        <div class="alert alert-success" role="alert">
+          <p><strong>Success: </strong>{{ success }}</p>
+        </div>
+      {% endif %}
+    </div>
+    <div class="input-group col-xs-10 col-sm-8 col-md-6 col-lg-4 pull-right">
+      <input id="keyword" type="text" value="" placeholder="示例：#未接单#一餐#王大锤" class="form-control">
+      <span class="input-group-btn">
+        <button class="btn btn-default" id="searchBtn" type="button">搜索 <span class="glyphicon glyphicon-search"></span></button>
+        <button onclick='parent.location="javascript:location.reload()"' class="btn btn-warning" type="button">刷新 <span class="glyphicon glyphicon-refresh"></span></button>
+      </span>
+    </div>
+  </div>
+
+  <br />
+
+  {% for order in orders %}
+    {% if order.state == 0 %}
+      <div class="panel panel-success">
+    {% elif order.state == 1 %}
+      <div class="panel panel-warning">
+    {% else %}
+      <div class="panel panel-default">
+    {% endif %}
+      <div class="panel-heading">
+        投条人：{% if order.is_anonymity == 0 %}{{ order.username }}(<span class="hidden-xs">信誉度：</span>{{ user.honor }})
+        {% else %}匿名({{ user.honor }})
+        {% endif %}
+        &nbsp;&nbsp;&nbsp;时间：{{ order.time }}
+        &nbsp;&nbsp;&nbsp;地点：{{ order.position }}
+        <div class="pull-right">
+        赏金：{{ order.nicecard }}
+        </div>
+      </div>
+      <div class="panel-body">
+        {% if order.content[30] %}
+        <span style="cursor:pointer;" onclick="$('.{{order.id}}all_content').slideToggle();">
+          <!-- <h4 class="tttshow {{order.id}}all_content" data-toggle="tooltip" data-placement="right" title="收起">{{ order.content[:6] }}……<span class="label label-primary">显示全部</span></h4> -->
+          <h4 class="{{order.id}}all_content">{{ order.content[:25] }}…… <span class="label label-primary">显示全部</span></h4>
+        </span>
+        <p class="{{order.id}}all_content" style="display: none">{{ order.content }}</p>
+        {% else %}
+        <h4>{{ order.content }}</h4>
+        {% endif %}
+      </div>
+      <div class="panel-footer">
+        <span class="hidden-xs">状态：</span>
+        {% if order.state == 0 %}
+          未接单
+        {% elif order.state == 1 %}
+          执行中
+        {% else %}
+          已完成
+        {% endif %}
+      <div class="pull-right">
+        <span class="hidden-xs">操作：</span>
+          <a href="deal/{{ order.id }}" class='label label-success'><span class='glyphicon glyphicon-usd'></span> 交易</a>&nbsp;&nbsp;&nbsp;
+          <a href="" data-toggle="modal" data-target="#letter{{ order.id }}" class='label label-info'><span class='glyphicon glyphicon-envelope'></span> 私信</a>
+        </div>
+      </div>
+    </div>
+    <form method="post" action="{{ url_for('letter', post_id=order.id) }}">
+      <div class="modal fade" id="letter{{ order.id }}" tabindex="-1" role="dialog" aria-labelledby="letter{{ order.id }}Modal" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+              <h4 class="modal-title" id="letter{{ order.id }}Modal">发送私信</h4>
+            </div>
+            <div class="modal-body">
+              <textarea name="content" class="form-control" style="resize: None" rows="3" placeholder="请输入......"></textarea>
+            </div>
+            <div class="modal-footer">
+              <input type="submit" class="btn btn-success" value="发送" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  {% endfor %}
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('li#menu_list_go').addClass("active");
+    });
+    $(document).ready(function(){
+      $("button#searchBtn").click(function(){
+        strs = document.getElementById('keyword').value;
+        strs.replace(/[ ]/g, "");
+        if (strs == "") {
+          return
+        }
+        str = strs.split("#");
+        col = $('.panel').toArray();
+        $('.panel').fadeOut();
+        $.each(col, function(i, m){
+          var k;
+          $.each(str, function(j, n){
+            if (!($(m).text().match(n))) {
+              return false;
+            } else {
+              k = j;
+            }
+          });
+          if (k == str.length-1) {
+            $(m).fadeIn();
+          }
+        })
+      });
+    });
+  </script>
+{% endblock %}

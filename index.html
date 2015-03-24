@@ -45,7 +45,7 @@
 	                    </a>
 	                    <li><a href="">地址(修改)</a></li>
 	                    <li><a href="">查看订单</a></li>
-	                    <li><a href="" ng-click="denglu">登陆</a></li>
+	                    <li><a href="" ng-init="denglu=true" ng-click="denglu=!denglu">登陆</a></li>
 	                    <li><a href="">注册</a></li>
 	                    <li><a href="">购物车</a></li>
 	                </ul>
@@ -60,7 +60,7 @@
 	    </div>
 	</header>
 
-	<div class="jumbotron" ng-hide="{{ denglu }}" style="width: 600px; align: center;">
+	<div class="jumbotron" ng-show="denglu" style="width: 600px; align: center;">
 		<h1>Hello, world!</h1>
 		<p>...</p>
 		<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>

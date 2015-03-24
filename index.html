@@ -6,9 +6,8 @@
 	<script type="text/javascript" src="static\angular.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="static\bootstrap.min.css">
 	<script type="text/javascript" src="static\ui-bootstrap-tpls-0.12.1.min.js"></script>
-
 	<script>
-		var myApp = angular.module('LaundrySystem', []);
+		angular.module('LaundrySystem', ['ui.bootstrap']);
 	  	angular.module('LaundrySystem').controller('CarouselDemoCtrl', function ($scope) {
 			$scope.myInterval = 5000;
 			var slides = $scope.slides = [];
@@ -44,29 +43,11 @@
 	                    <a href="#top" role="button" class="navbar-brand">
 	                        洗衣中心
 	                    </a>
-	                    <li class="dropdown" dropdown>
-	                        <a role="button" class="dropdown-toggle" dropdown-toggle>
-	                            Directives <b class="caret"></b>
-	                        </a>
-	                        <ul class="dropdown-menu">
-	                            <li><a href="#accordion">Accordion</a></li>
-	                            <li><a href="#alert">Alert</a></li><li><a href="#buttons">Buttons</a></li>
-	                            <li><a href="#carousel">Carousel</a></li>
-	                            <li><a href="#collapse">Collapse</a></li>
-	                            <li><a href="#datepicker">Datepicker</a></li>
-	                            <li><a href="#dropdown">Dropdown</a></li>
-	                            <li><a href="#modal">Modal</a></li>
-	                            <li><a href="#pagination">Pagination</a></li>
-	                            <li><a href="#popover">Popover</a></li>
-	                            <li><a href="#progressbar">Progressbar</a></li>
-	                            <li><a href="#rating">Rating</a></li>
-	                            <li><a href="#tabs">Tabs</a></li>
-	                            <li><a href="#timepicker">Timepicker</a></li>
-	                            <li><a href="#tooltip">Tooltip</a></li>
-	                            <li><a href="#typeahead">Typeahead</a></li>
-	                        </ul>
-	                    </li>
-	                    <li><a href="#getting_started">Getting started</a></li>
+	                    <li><a href="">地址(修改)</a></li>
+	                    <li><a href="">查看订单</a></li>
+	                    <li><a href="" ng-click="denglu">登陆</a></li>
+	                    <li><a href="">注册</a></li>
+	                    <li><a href="">购物车</a></li>
 	                </ul>
 	            </nav>
 	            <nav class="visible-xs" collapse="!isCollapsed">
@@ -78,6 +59,13 @@
 	        </div>
 	    </div>
 	</header>
+
+	<div class="jumbotron" ng-hide="{{ denglu }}" style="width: 600px; align: center;">
+		<h1>Hello, world!</h1>
+		<p>...</p>
+		<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+	</div>
+
 	<div ng-controller="CarouselDemoCtrl">
 	  	<div style="height: 305px">
 	    	<carousel interval="myInterval">
@@ -89,6 +77,18 @@
 					</div>
 				</slide>
 			</carousel>
+		</div>
+	</div>
+	<div class="row" align="center">
+		<div class="col-sm-6 col-md-2 col-md-offset-4">
+			<div class="thumbnail">
+				<img src="img/西裤.jpg" alt="...">
+				<div class="caption">
+					<h3>Thumbnail label</h3>
+					<p>...</p>
+					<p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">加入购物车</a></p>
+				</div>
+			</div>
 		</div>
 	</div>
 	<footer class="footer">

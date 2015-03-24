@@ -14,6 +14,7 @@ create table goods (
     type text not null,
     name text not null,
     pic text not null,
+    discount integer default 0,
     num integer default 0
 );
 

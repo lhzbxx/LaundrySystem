@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" src="static\angular.min.js"></script>
+    <script type="text/javascript">
+        angular.module('CartApp', [])
+            .controller('CartController', function ($scope) {
+            $scope.items = [
+                { title: '薯片', quantity: 2, price: 5.40 }, 
+                { title: '巧克力', quantity: 1, price: 12.40 }, 
+                { title: '牛奶', quantity: 1, price: 45.82 }
+            ];
+
+            $scope.remove = function (index) {
+                $scope.items.splice(index, 1);
+            };
+
+            $scope.totalPirce = function () {
+                var total = 0;
+                angular.forEach($scope.items, function (value, key) {
+                    total += value.quantity * value.price;
+                });
+                return total;
+            };
+        });
+    </script>
+</head>
+<body>
+    <div ng-app="CartApp">
+        <div ng-controller="CartController">
+             <h1>购物车</h1>
+
+            <table>
+                <tr>
+                    <th>商品</th>
+                    <th>数量</th>
+                    <th>单价</th>
+                    <th>总价</th>
+                    <th>删除</th>
+                </tr>
+                <tr ng-repeat="item in items">
+                    <td>{{ item.title }}</td>
+                    <td>
+                        <input ng-model="item.quantity" />
+                    </td>
+                    <td>{{ item.price | currency }}</td>
+                    <td>{{ item.price * item.quantity | currency }}</td>
+                    <td>
+                        <button ng-click="remove(index)">删除</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -5,7 +5,7 @@
 	<title>Laundry System</title>
 	<script type="text/javascript" src="static\angular.min.js"></script>
 	<script>
-	  	angular.module('LaundrySystem').controller('CarouselDemoCtrl', function ($scope) {
+	  	angular.module('LaundrySystem').controller('CarouselCtrl', function ($scope) {
 			$scope.myInterval = 5000;
 			var slides = $scope.slides = [];
 			$scope.addSlide = function() {
@@ -42,11 +42,11 @@
 	                    <a href="#top" role="button" class="navbar-brand">
 	                        洗衣中心
 	                    </a>
-	                    <li><a href="">地址(修改)</a></li>
-	                    <li><a href="">查看订单</a></li>
-	                    <li><a href="" ng-init="denglu=true" ng-click="denglu=!denglu">登陆</a></li>
-	                    <li><a href="">注册</a></li>
-	                    <li><a href="">购物车</a></li>
+	                    <li><button href="" ng-model="dizhi" ng-init="dizhi=false" ng-click="dizhi=!dizhi">地址(修改)</button></li>
+	                    <li><button href="" ng-model="dizhi" ng-init="dingdan=false" ng-click="dingdan=!dingdan">查看订单</button></li>
+	                    <li><button href="" ng-model="dizhi" ng-init="denglu=false" ng-click="denglu=!denglu">登陆</button></li>
+	                    <li><button href="" ng-model="dizhi" ng-init="zhuce=false" ng-click="zhuce=!zhuce">注册</button></li>
+	                    <li><button href="" ng-model="dizhi" ng-init="gouwuche=false" ng-click="gouwuche=!gouwuche">购物车</button></li>
 	                </ul>
 	            </nav>
 	            <nav class="visible-xs" collapse="!isCollapsed">
@@ -67,14 +67,35 @@
 	</div>
 	
 	<!-- 注册模块 -->
-	<div class="jumbotron" ng-show="denglu" style="width: 600px; align: center;">
+	<div class="jumbotron" ng-show="zhuce" style="width: 600px; align: center;">
+		<h1>Hello, world!</h1>
+		<p>...</p>
+		<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+	</div>
+
+	<!-- 订单查看模块 -->
+	<div class="jumbotron" ng-show="dingdan" style="width: 600px; align: center;">
+		<h1>Hello, world!</h1>
+		<p>...</p>
+		<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+	</div>
+
+	<!-- 购物车模块 -->
+	<div class="jumbotron" ng-show="gouwuche" style="width: 600px; align: center;">
+		<h1>Hello, world!</h1>
+		<p>...</p>
+		<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+	</div>
+
+	<!-- 地址修改模块 -->
+	<div class="jumbotron" ng-show="dizhi" style="width: 600px; align: center;">
 		<h1>Hello, world!</h1>
 		<p>...</p>
 		<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
 	</div>
 
 	<!-- 广告展示 -->
-	<div ng-controller="CarouselDemoCtrl">
+	<div ng-controller="CarouselCtrl">
 	  	<div style="height: 305px">
 	    	<carousel interval="myInterval">
 				<slide ng-repeat="slide in slides" active="slide.active">

@@ -3,58 +3,108 @@
 <head>
     <script type="text/javascript" src="static\angular.min.js"></script>
     <script type="text/javascript">
-        angular.module('CartApp', [])
-            .controller('CartController', function ($scope) {
-            $scope.items = [
-                { title: '薯片', quantity: 2, price: 5.40 }, 
-                { title: '巧克力', quantity: 1, price: 12.40 }, 
-                { title: '牛奶', quantity: 1, price: 45.82 }
-            ];
 
-            $scope.remove = function (index) {
-                $scope.items.splice(index, 1);
+        var app = angular.module('LaundrySystem', [])
+
+        app.controller('ShoppingCartController', function ($scope) {
+            $scope.cart = [];
+
+            $scope.removeGoods = function (index) {
+                $scope.cart.splice(index, 1);
             };
 
-            $scope.totalPirce = function () {
+            $scope.increaseGoods = function (index) {
+                $scope.cart[index].quantity += 1;
+            }
+
+            $scope.decreaseGoods = function (index) {
+                $scope.cart[index].quantity -= 1;
+                if ($scope.cart[index].quantity == 0) {
+                    $scope.cart.splice(index, 1);
+                }
+            }
+
+            $scope.totalQuantity = function () {
+                return $scope.cart.length;
+            }
+
+            $scope.totalPrice = function () {
                 var total = 0;
-                angular.forEach($scope.items, function (value, key) {
-                    total += value.quantity * value.price;
-                });
+                for (var i in $scope.cart) {
+                    total += $scope.cart[i].quantity * $scope.cart[i].price;
+                }
+                // angular.forEach($scope.cart, function (value, key) {
+                //     total += value.quantity * value.price;
+                // });
                 return total;
             };
+
+            $scope.addGoods = function (n, p) {
+                for (var i in $scope.cart) {
+                    if ($scope.cart[i].name == n) {
+                        $scope.cart[i].quantity += 1;
+                        return;
+                    }
+                }
+                $scope.cart.push({name: n, quantity: 1, price: p});
+            };
+
+            $scope.clearGoods = function () {
+                $scope.cart.splice(0, $scope.cart.length);
+            };
         });
+
+        app.controller('GoodsListController', function ($scope, $http) {
+            $http.get('http://localhost:5000/goodsList').
+                success(function(data, status, headers, config) {
+                    $scope.items = data.goods;
+                }).
+                error(function(data, status, headers, config) {
+                    alert("网络错误");
+                });
+        });
+
     </script>
 </head>
-<body>
-    <div ng-app="CartApp">
-        <div ng-controller="CartController">
-             <h1>购物车</h1>
-
+<body ng-app="LaundrySystem">
+    <div ng-controller="ShoppingCartController">
+        <h1>购物车</h1>
+        <table>
+            <tr>
+                <th>商品</th>
+                <th></th>
+                <th>数量</th>
+                <th></th>
+                <th>单价</th>
+                <th>删除</th>
+            </tr>
+            <tr ng-repeat="item in cart">
+                <td>{{ item.name }}</td>
+                <td><button href="" ng-click="decreaseGoods($index)">-</button></td>
+                <td>{{ item.quantity }}</td>
+                <td><button href="" ng-click="increaseGoods($index)">+</button></td>
+                <td>￥ {{ item.price }}</td>
+                <td><button ng-click="removeGoods($index)">X</button></td>
+            </tr>
+        </table>
+        <button ng-click="clearGoods()">清空</button>
+        <span>{{ totalQuantity() }}</span>
+        <span>个项目 总价：￥ </span>
+        <span>{{ totalPrice() }}</span>
+        <div ng-controller="GoodsListController">
+             <h1>商品清单</h1>
             <table>
                 <tr>
                     <th>商品</th>
-                    <th>数量</th>
-                    <th>单价</th>
-                    <th>总价</th>
-                    <th>删除</th>
+                    <th>价格</th>
+                    <th>图片</th>
+                    <th>操作</th>
                 </tr>
                 <tr ng-repeat="item in items">
-                    <td>{{ item.title }}</td>
-                    <td>
-                        <input ng-model="item.quantity" />
-                    </td>
-                    <td>{{ item.price | currency }}</td>
-                    <td>{{ item.price * item.quantity | currency }}</td>
-                    <td>
-                        <button ng-click="remove(index)">删除</button>
-                    </td>
-                </tr>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                    <td>{{ item.name }}</td>
+                    <td>￥ {{ item.price }}</td>
+                    <td><img ng-src="img\{{ item.pic }}"></td>
+                    <td><button ng-click="addGoods(item.name, item.price)">加入购物车</button></td>
                 </tr>
             </table>
         </div>

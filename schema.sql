@@ -11,9 +11,9 @@ create table user (
 drop table if exists goods;
 create table goods (
     id integer primary key autoincrement,
-    type text not null,
     name text not null,
     pic text not null,
+    price integer not null,
     discount integer default 0,
     num integer default 0
 );

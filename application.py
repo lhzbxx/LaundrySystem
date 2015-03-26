@@ -36,6 +36,13 @@ def welcome():
     else:
         return redirect(url_for('login'))
 
+@app.route('/goodsList')
+def goodsList():
+    goods = query_db("select * from goods")
+    return jsonify({"goods": goods}), 200, \
+    { 'Access-Control-Allow-Origin': '*', \
+      'Access-Control-Allow-Methods' : 'GET' }
+
 # 简化sqlite3的查询方式。
 def query_db(query, args=(), one=False):
     cur = g.db.execute(query, args)

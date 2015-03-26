@@ -4,10 +4,7 @@
     <meta charset="utf-8">
 	<title>Laundry System</title>
 	<script type="text/javascript" src="static\angular.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="static\bootstrap.min.css">
-	<script type="text/javascript" src="static\ui-bootstrap-tpls-0.12.1.min.js"></script>
 	<script>
-		angular.module('LaundrySystem', ['ui.bootstrap']);
 	  	angular.module('LaundrySystem').controller('CarouselDemoCtrl', function ($scope) {
 			$scope.myInterval = 5000;
 			var slides = $scope.slides = [];
@@ -26,6 +23,8 @@
 	</script>
 </head>
 <body>
+
+	<!-- 页头导航栏 -->
 	<header class="navbar navbar-default navbar-fixed-top">
 	    <div class="navbar-inner">
 	        <div class="container">
@@ -60,18 +59,21 @@
 	    </div>
 	</header>
 
+	<!-- 登录模块 -->
 	<div class="jumbotron" ng-show="denglu" style="width: 600px; align: center;">
 		<h1>Hello, world!</h1>
 		<p>...</p>
 		<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
 	</div>
 	
+	<!-- 注册模块 -->
 	<div class="jumbotron" ng-show="denglu" style="width: 600px; align: center;">
 		<h1>Hello, world!</h1>
 		<p>...</p>
 		<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
 	</div>
 
+	<!-- 广告展示 -->
 	<div ng-controller="CarouselDemoCtrl">
 	  	<div style="height: 305px">
 	    	<carousel interval="myInterval">
@@ -85,7 +87,9 @@
 			</carousel>
 		</div>
 	</div>
-	<div class="row" align="center">
+
+	<!-- 商品显示 -->
+	<div class="row">
 		<div class="col-sm-6 col-md-2 col-md-offset-4">
 			<div class="thumbnail">
 				<img src="img/西裤.jpg" alt="...">
@@ -97,6 +101,8 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- 页面底部信息 -->
 	<footer class="footer">
 		<div class="container">
 			<p>Made by LuHao.</p>

@@ -7,6 +7,7 @@
         var app = angular.module('LaundrySystem', [])
 
         app.controller('ShoppingCartController', function ($scope) {
+            CartShow = 0;
             $scope.cart = [];
 
             $scope.removeGoods = function (index) {
@@ -64,33 +65,111 @@
                 });
         });
 
+        app.controller('AddressController', function ($scope) {
+            AddrShow = 0;
+            Regions = 0;
+            region = 1;
+            // var currentAddr = $cookies.get('currentAddr');
+            // $scope.confirmAddr = function(n) {
+            //     $cookies.put('currentAddr', n);
+            // }
+        });
+
+        app.controller('HistoryController', function ($scope) {
+
+        });
+
+        app.controller('SignupController', function ($scope) {
+            SignupShow = 0;
+        });
+
+        app.controller('LoginController', function ($scope) {
+            LoginShow = 0;
+        });
+
     </script>
 </head>
 <body ng-app="LaundrySystem">
+    <div ng-controller="HistoryController">
+        
+    </div>
+    <div ng-controller="AddressController">
+        <button ng-click="AddrShow=!AddrShow">当前地址：{{ currentAddr }}</button>
+        <div ng-show="AddrShow">
+            <ul>
+                <li><span ng-mouseenter="Regions=0">上海</span></li>
+                <li><span ng-mouseenter="Regions=1">杭州</span></li>
+                <li><span ng-mouseenter="Regions=2">南京</span></li>
+            </ul>
+            <div ng-show="Regions==0">
+                <ul>
+                    <li>
+                        <span ng-mouseenter="region=0">闵行</span>
+                    </li>
+                    <li>
+                        <span ng-mouseenter="region=1">松江</span>
+                    </li>
+                </ul>
+                <ul ng-show="region==0">
+                    <li ng-click="confirmAddr(上海交通大学)">上海交通大学</li>
+                    <li>华东师范大学</li>
+                    <li>紫竹科技园区</li>
+                </ul>
+                <ul ng-show="region==1">
+                    <li>松江大学城一期</li>
+                    <li>松江大学城二期</li>
+                    <li>松江大学城三期</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div ng-controller="SignupController">
+        <button ng-click="SignupShow=!SignupShow">注册</button>
+        <div ng-show="SignupShow">
+            <span>用户名：</span><input type="text" placeholder="用户名">
+            <span>密码：</span><input type="password" placeholder="密码">
+            <span>联系方式：</span><input type="text" placeholder="联系方式">
+            <span>地址：</span><select><option>X11</option><option>X13</option><option>X14</option><option>X15</option></select>
+            <button>注册</button>
+        </div>
+    </div>
+
+    <div ng-controller="LoginController">
+        <button ng-click="LoginShow=!LoginShow">登陆</button>
+        <div ng-show="LoginShow">
+            <span>用户名：</span><input type="text" placeholder="用户名">
+            <span>密码：</span><input type="password" placeholder="密码">
+            <button>登陆</button>
+        </div>
+    </div>
+
     <div ng-controller="ShoppingCartController">
-        <h1>购物车</h1>
-        <table>
-            <tr>
-                <th>商品</th>
-                <th></th>
-                <th>数量</th>
-                <th></th>
-                <th>单价</th>
-                <th>删除</th>
-            </tr>
-            <tr ng-repeat="item in cart">
-                <td>{{ item.name }}</td>
-                <td><button href="" ng-click="decreaseGoods($index)">-</button></td>
-                <td>{{ item.quantity }}</td>
-                <td><button href="" ng-click="increaseGoods($index)">+</button></td>
-                <td>￥ {{ item.price }}</td>
-                <td><button ng-click="removeGoods($index)">X</button></td>
-            </tr>
-        </table>
-        <button ng-click="clearGoods()">清空</button>
-        <span>{{ totalQuantity() }}</span>
-        <span>个项目 总价：￥ </span>
-        <span>{{ totalPrice() }}</span>
+        <button ng-click="CartShow=!CartShow">购物车 {{ totalQuantity() }} 个项目 总价：￥ {{ totalPrice() }}</button>
+        <div ng-show="CartShow">
+            <table>
+                <tr>
+                    <th>商品</th>
+                    <th></th>
+                    <th>数量</th>
+                    <th></th>
+                    <th>单价</th>
+                    <th>删除</th>
+                </tr>
+                <tr ng-repeat="item in cart">
+                    <td>{{ item.name }}</td>
+                    <td><button href="" ng-click="decreaseGoods($index)">-</button></td>
+                    <td>{{ item.quantity }}</td>
+                    <td><button href="" ng-click="increaseGoods($index)">+</button></td>
+                    <td>￥ {{ item.price }}</td>
+                    <td><button ng-click="removeGoods($index)">X</button></td>
+                </tr>
+            </table>
+            <button ng-click="clearGoods()">清空</button>
+            <span>总价：￥ </span>
+            <span>{{ totalPrice() }}</span>
+            <button>结算</button>
+        </div>
         <div ng-controller="GoodsListController">
              <h1>商品清单</h1>
             <table>

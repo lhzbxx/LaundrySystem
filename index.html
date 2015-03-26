@@ -84,17 +84,17 @@
 				{{ x.name + ', ' + x.price }}
 			</li>
 		</ul>
-		<script>
-			angular.module('LaundrySystem').controller('gouwucheCtrl', function ($scope) {
-				var goodsList = $scope.goodsList;
-				addGoods = function () {
-					goodsList.push {
-						name: "haha";
-						price: 5;
-					}
-				}
-			});
-		</script>
+	</div>
+	
+	<div ng-controller="CartController">
+    <h1>Your Order</h1>
+    <div ng-repeat="item in items">
+		<span>{{item.title}}</span>
+		<input ng-model="item.quantity" />
+		<span>{{item.price | currency}}</span>
+		<span>{{item.price * item.quantity | currency}}</span>
+		<button ng-click="remove($index)">Remove</button>
+    </div>
 	</div>
 	
 	<div ng-controller="CarouselDemoCtrl">
@@ -129,5 +129,30 @@
 			<p>Made by LuHao.</p>
 		</div>
 	</footer>
+	
+    <script>
+      angular.module('LaundrySystem').controller('CartController', function CartController($scope) {
+        $scope.items = [
+			{title: 'Pots', quantity: 8, price: 3.95},
+			{title: 'Dots', quantity: 17, price: 12.95},
+			{title: 'Pebbels', quantity: 5, price: 6.95}
+        ];
+        $scope.remove = function(index) {
+			$scope.items.splice(index, 1);
+        };
+      });
+    </script>
+	
+		<script>
+			angular.module('LaundrySystem').controller('gouwucheCtrl', function ($scope) {
+				var goodsList = $scope.goodsList;
+				addGoods = function () {
+					goodsList.push {
+						name: "haha";
+						price: 5;
+					}
+				}
+			});
+		</script>
 </body>
 </html>

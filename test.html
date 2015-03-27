@@ -2,27 +2,34 @@
 <html>
 <head>
     <script type="text/javascript" src="static\angular.min.js"></script>
+    <script type="text/javascript" src="static\angular-cookies.min.js"></script>
     <script type="text/javascript">
 
-        var app = angular.module('LaundrySystem', [])
+        var app = angular.module('LaundrySystem', ["ngCookies"])
 
-        app.controller('ShoppingCartController', function ($scope) {
+        app.controller('ShoppingCartController', function ($scope, $cookies) {
+			ProcessShow = 0;
+			processIndex = 0;
             CartShow = 0;
-            $scope.cart = [];
+            $scope.cart = $cookies.get("cart");
+			$scope.cart = [];
 
-            $scope.removeGoods = function (index) {
+            $scope.removeGoods = function (index, $cookies) {
                 $scope.cart.splice(index, 1);
+				$cookies.put("cart", $scope.cart);
             };
 
-            $scope.increaseGoods = function (index) {
+            $scope.increaseGoods = function (index, $cookies) {
                 $scope.cart[index].quantity += 1;
+				$cookies.put("cart", $scope.cart);
             }
 
-            $scope.decreaseGoods = function (index) {
+            $scope.decreaseGoods = function (index, $cookies) {
                 $scope.cart[index].quantity -= 1;
                 if ($scope.cart[index].quantity == 0) {
                     $scope.cart.splice(index, 1);
                 }
+				$cookies.put("cart", $scope.cart);
             }
 
             $scope.totalQuantity = function () {
@@ -34,13 +41,10 @@
                 for (var i in $scope.cart) {
                     total += $scope.cart[i].quantity * $scope.cart[i].price;
                 }
-                // angular.forEach($scope.cart, function (value, key) {
-                //     total += value.quantity * value.price;
-                // });
                 return total;
             };
 
-            $scope.addGoods = function (n, p) {
+            $scope.addGoods = function (n, p, $cookies) {
                 for (var i in $scope.cart) {
                     if ($scope.cart[i].name == n) {
                         $scope.cart[i].quantity += 1;
@@ -48,10 +52,12 @@
                     }
                 }
                 $scope.cart.push({name: n, quantity: 1, price: p});
+				$cookies.put("cart", $scope.cart);
             };
 
-            $scope.clearGoods = function () {
+            $scope.clearGoods = function ($cookies) {
                 $scope.cart.splice(0, $scope.cart.length);
+				$cookies.put("cart", $scope.cart);
             };
         });
 
@@ -101,7 +107,7 @@
                 <li><span ng-mouseenter="Regions=1">杭州</span></li>
                 <li><span ng-mouseenter="Regions=2">南京</span></li>
             </ul>
-            <div ng-show="Regions==0">
+            <div ng-show="!Regions">
                 <ul>
                     <li>
                         <span ng-mouseenter="region=0">闵行</span>
@@ -110,8 +116,8 @@
                         <span ng-mouseenter="region=1">松江</span>
                     </li>
                 </ul>
-                <ul ng-show="region==0">
-                    <li ng-click="confirmAddr(上海交通大学)">上海交通大学</li>
+                <ul ng-show="!region">
+                    <li>上海交通大学</li>
                     <li>华东师范大学</li>
                     <li>紫竹科技园区</li>
                 </ul>
@@ -143,7 +149,7 @@
             <button>登陆</button>
         </div>
     </div>
-
+	
     <div ng-controller="ShoppingCartController">
         <button ng-click="CartShow=!CartShow">购物车 {{ totalQuantity() }} 个项目 总价：￥ {{ totalPrice() }}</button>
         <div ng-show="CartShow">
@@ -168,8 +174,24 @@
             <button ng-click="clearGoods()">清空</button>
             <span>总价：￥ </span>
             <span>{{ totalPrice() }}</span>
-            <button>结算</button>
-        </div>
+            <button ng-click="ProcessShow=!ProcessShow">结算</button>        
+			<div ng-show="ProcessShow">
+				<span>选购流程</span>
+				<div ng-show="!processIndex">
+					<h3>第一步 确定洗衣清单</h3>
+					<button  ng-click="processIndex=1">下一步</button>
+				</div>
+				<div ng-show="processIndex==1">
+					<h3>第二步 确认个人信息</h3>
+					<button ng-click="processIndex=2">下一步</button>
+				</div>
+				<div ng-show="processIndex==2">
+					<h3>第三步 选择支付方式</h3>
+					<button ng-click="processIndex=0;ProcessShow=0;">下一步</button>
+				</div>
+			</div>
+		</div>
+		
         <div ng-controller="GoodsListController">
              <h1>商品清单</h1>
             <table>

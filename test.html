@@ -11,6 +11,10 @@
 			ProcessShow = 0;
 			processIndex = 0;
             CartShow = 0;
+            registerUser = 0;
+            currentUser = "鲁浩";
+            if($cookieStore.get("cart") == null)
+                $cookieStore.put("cart", []);
 			$scope.cart = [].concat($cookieStore.get("cart"));
 
             $scope.removeGoods = function (index) {

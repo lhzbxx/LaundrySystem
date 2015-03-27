@@ -13,9 +13,7 @@
             CartShow = 0;
             registerUser = 0;
             currentUser = "鲁浩";
-            if($cookieStore.get("cart") == null)
-                $cookieStore.put("cart", []);
-			$scope.cart = [].concat($cookieStore.get("cart"));
+			$scope.cart = $cookieStore.get("cart") || [];
 
             $scope.removeGoods = function (index) {
                 $scope.cart.splice(index, 1);
@@ -51,11 +49,12 @@
                 for (var i in $scope.cart) {
                     if ($scope.cart[i].name == n) {
                         $scope.cart[i].quantity += 1;
+                        $cookieStore.put("cart", $scope.cart);
                         return;
                     }
                 }
                 $scope.cart.push({name: n, quantity: 1, price: p});
-				$cookieStore.put("cart", $scope.cart);
+                $cookieStore.put("cart", $scope.cart);
             };
 
             $scope.clearGoods = function () {
@@ -70,7 +69,7 @@
                     $scope.items = data.goods;
                 }).
                 error(function(data, status, headers, config) {
-                    alert("网络错误");
+                    alert("网络繁忙！");
                 });
         });
 

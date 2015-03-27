@@ -7,29 +7,28 @@
 
         var app = angular.module('LaundrySystem', ["ngCookies"])
 
-        app.controller('ShoppingCartController', function ($scope, $cookies) {
+        app.controller('ShoppingCartController', function ($scope, $cookieStore) {
 			ProcessShow = 0;
 			processIndex = 0;
             CartShow = 0;
-            $scope.cart = $cookies.get("cart");
-			$scope.cart = [];
+			$scope.cart = [].concat($cookieStore.get("cart"));
 
-            $scope.removeGoods = function (index, $cookies) {
+            $scope.removeGoods = function (index) {
                 $scope.cart.splice(index, 1);
-				$cookies.put("cart", $scope.cart);
+				$cookieStore.put("cart", $scope.cart);
             };
 
-            $scope.increaseGoods = function (index, $cookies) {
+            $scope.increaseGoods = function (index) {
                 $scope.cart[index].quantity += 1;
-				$cookies.put("cart", $scope.cart);
+				$cookieStore.put("cart", $scope.cart);
             }
 
-            $scope.decreaseGoods = function (index, $cookies) {
+            $scope.decreaseGoods = function (index) {
                 $scope.cart[index].quantity -= 1;
                 if ($scope.cart[index].quantity == 0) {
                     $scope.cart.splice(index, 1);
                 }
-				$cookies.put("cart", $scope.cart);
+				$cookieStore.put("cart", $scope.cart);
             }
 
             $scope.totalQuantity = function () {
@@ -44,7 +43,7 @@
                 return total;
             };
 
-            $scope.addGoods = function (n, p, $cookies) {
+            $scope.addGoods = function (n, p) {
                 for (var i in $scope.cart) {
                     if ($scope.cart[i].name == n) {
                         $scope.cart[i].quantity += 1;
@@ -52,12 +51,12 @@
                     }
                 }
                 $scope.cart.push({name: n, quantity: 1, price: p});
-				$cookies.put("cart", $scope.cart);
+				$cookieStore.put("cart", $scope.cart);
             };
 
-            $scope.clearGoods = function ($cookies) {
+            $scope.clearGoods = function () {
                 $scope.cart.splice(0, $scope.cart.length);
-				$cookies.put("cart", $scope.cart);
+				$cookieStore.put("cart", $scope.cart);
             };
         });
 
@@ -75,9 +74,9 @@
             AddrShow = 0;
             Regions = 0;
             region = 1;
-            // var currentAddr = $cookies.get('currentAddr');
+            // var currentAddr = $cookieStore.get('currentAddr');
             // $scope.confirmAddr = function(n) {
-            //     $cookies.put('currentAddr', n);
+            //     $cookieStore.put('currentAddr', n);
             // }
         });
 
@@ -97,7 +96,7 @@
 </head>
 <body ng-app="LaundrySystem">
     <div ng-controller="HistoryController">
-        
+        <button>历史订单</button>
     </div>
     <div ng-controller="AddressController">
         <button ng-click="AddrShow=!AddrShow">当前地址：{{ currentAddr }}</button>
@@ -130,27 +129,38 @@
         </div>
     </div>
 
-    <div ng-controller="SignupController">
-        <button ng-click="SignupShow=!SignupShow">注册</button>
-        <div ng-show="SignupShow">
-            <span>用户名：</span><input type="text" placeholder="用户名">
-            <span>密码：</span><input type="password" placeholder="密码">
-            <span>联系方式：</span><input type="text" placeholder="联系方式">
-            <span>地址：</span><select><option>X11</option><option>X13</option><option>X14</option><option>X15</option></select>
-            <button>注册</button>
-        </div>
-    </div>
-
-    <div ng-controller="LoginController">
-        <button ng-click="LoginShow=!LoginShow">登陆</button>
-        <div ng-show="LoginShow">
-            <span>用户名：</span><input type="text" placeholder="用户名">
-            <span>密码：</span><input type="password" placeholder="密码">
-            <button>登陆</button>
-        </div>
-    </div>
-	
     <div ng-controller="ShoppingCartController">
+
+		<div ng-show="!registerUser">
+			<div ng-controller="SignupController">
+				<button ng-click="SignupShow=!SignupShow">注册</button>
+				<div ng-show="SignupShow">
+					<span>用户名：</span><input type="text" placeholder="用户名">
+					<span>密码：</span><input type="password" placeholder="密码">
+					<span>联系方式：</span><input type="text" placeholder="联系方式">
+					<span>地址：</span><select><option>X11</option><option>X13</option><option>X14</option><option>X15</option></select>
+					<button>注册</button>
+				</div>
+			</div>
+			<div ng-controller="LoginController">
+				<button ng-click="LoginShow=!LoginShow">登陆</button>
+				<div ng-show="LoginShow">
+					<span>用户名：</span><input type="text" placeholder="用户名">
+					<span>密码：</span><input type="password" placeholder="密码">
+					<button>登陆</button>
+				</div>
+			</div>
+		</div>
+		
+		<div ng-show="registerUser">
+			<button>{{ currentUser }}</button>
+			<ul>
+				<li>修改密码</li>
+				<li>个人信息</li>
+				<li>退出</li>
+			</ul>
+		</div>
+		
         <button ng-click="CartShow=!CartShow">购物车 {{ totalQuantity() }} 个项目 总价：￥ {{ totalPrice() }}</button>
         <div ng-show="CartShow">
             <table>
@@ -193,7 +203,7 @@
 		</div>
 		
         <div ng-controller="GoodsListController">
-             <h1>商品清单</h1>
+            <h1>商品清单</h1>
             <table>
                 <tr>
                     <th>商品</th>

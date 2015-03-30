@@ -64,13 +64,13 @@
         });
 
         app.controller('GoodsListController', function ($scope, $http) {
-            $http.get('http://localhost:5000/goodsList').
-                success(function(data, status, headers, config) {
-                    $scope.items = data.goods;
-                }).
-                error(function(data, status, headers, config) {
-                    alert("网络繁忙！");
-                });
+            $http.get('http://localhost:5000/goodsList')
+            .success(function(data, status, headers, config) {
+                $scope.items = data.goods;
+            })
+            .error(function(data, status, headers, config) {
+                alert("网络繁忙！");
+            });
         });
 
         app.controller('AddressController', function ($scope) {
@@ -87,12 +87,56 @@
 
         });
 
-        app.controller('SignupController', function ($scope) {
+        app.controller('SignupController', function ($scope, $http) {
             SignupShow = 0;
+            seDir = 0;
+            buildID = null;
+            $scope.signup = function () {
+                alert(JSON.stringify({'username': $scope.username, 'password': $scope.password, "phonenum": $scope.phonenum, "address": $scope.sectionSelect + $scope.buildID}));
+                $http.post('http://localhost:5000/signup', JSON.stringify({'username': $scope.username, 'password': $scope.password, "phonenum": $scope.phonenum, "address": $scope.sectionSelect + $scope.buildID}))
+                .success(function(data, status, headers, config) {
+                    if (data.msg == "YES") {
+                        alert("注册成功！");
+                    } else{
+                        alert("注册失败！");
+                    };
+                })
+                .error(function(data, status, headers, config) {
+                    alert("网络繁忙！");
+                })
+            }
         });
 
-        app.controller('LoginController', function ($scope) {
+        app.controller('LoginController', function ($scope, $http) {
             LoginShow = 0;
+            $scope.login = function () {
+                $http.post('http://localhost:5000/login', JSON.stringify({'username': $scope.username, 'password': $scope.password}))
+                .success(function(data, status, headers, config) {
+                    if (data.msg == "YES") {
+                        alert("登录成功！");
+                    } else{
+                        alert("用户名或密码错误！");
+                    };
+                })
+                .error(function(data, status, headers, config) {
+                    alert("网络繁忙！");
+                })
+            }
+        });
+
+        app.controller('FeedBackController', function ($scope, $http) {
+            FeedBackShow = 0;
+            $scope.fbUpload = function () {
+                $http.post('http://localhost:5000/feedback', JSON.stringify({'contact': $scope.fbContact, 'content': $scope.fbContent}))
+                .success(function(data, status, headers, config) {
+                    if (data.msg == "YES") {
+                        alert("提交成功！");
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    alert("网络繁忙！");
+                })
+            }
         });
 
     </script>
@@ -101,7 +145,17 @@
     <div ng-controller="HistoryController">
         <button>历史订单</button>
     </div>
-    <div ng-controller="AddressController">
+
+    <div ng-controller="FeedBackController">
+        <button ng-click="FeedBackShow=!FeedBackShow">反馈</button>
+        <div ng-show="FeedBackShow">
+            <span>联系方式</span><input ng-model="fbContact" type="text">
+            <span>内容</span><input ng-model="fbContent" type="text">
+            <button ng-click="fbUpload()">提交</button>
+        </div>
+    </div>
+
+<!--     <div ng-controller="AddressController">
         <button ng-click="AddrShow=!AddrShow">当前地址：{{ currentAddr }}</button>
         <div ng-show="AddrShow">
             <ul>
@@ -130,7 +184,7 @@
                 </ul>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div ng-controller="ShoppingCartController">
 
@@ -138,19 +192,22 @@
 			<div ng-controller="SignupController">
 				<button ng-click="SignupShow=!SignupShow">注册</button>
 				<div ng-show="SignupShow">
-					<span>用户名：</span><input type="text" placeholder="用户名">
-					<span>密码：</span><input type="password" placeholder="密码">
-					<span>联系方式：</span><input type="text" placeholder="联系方式">
-					<span>地址：</span><select><option>X11</option><option>X13</option><option>X14</option><option>X15</option></select>
-					<button>注册</button>
+					<span>用户名：</span><input ng-model="username" type="text" placeholder="用户名">
+					<span>密码：</span><input ng-model="password" type="password" placeholder="密码">
+					<span>联系方式：</span><input ng-model="phonenum" type="text" placeholder="联系方式">
+					<span>地址：</span>
+                    <select ng-model="sectionSelect"><option>西区</option><option>东区</option></select>
+                    <select ng-show="sectionSelect=='西区'"><option ng-selected="buildID='X11'">X11</option><option ng-selected="buildID='X13'">X13</option><option ng-selected="buildID='X14'">X14</option><option ng-selected="buildID='X15'">X15</option></select>
+                    <select ng-show="sectionSelect=='东区'"><option ng-selected="buildID='D11'">D11</option><option ng-selected="buildID='D13'">D13</option><option ng-selected="buildID='D14'">D14</option><option ng-selected="buildID='D15'">D15</option></select>
+					<button ng-click="signup()">注册</button>
 				</div>
 			</div>
 			<div ng-controller="LoginController">
-				<button ng-click="LoginShow=!LoginShow">登陆</button>
+				<button ng-click="LoginShow=!LoginShow">登录</button>
 				<div ng-show="LoginShow">
-					<span>用户名：</span><input type="text" placeholder="用户名">
-					<span>密码：</span><input type="password" placeholder="密码">
-					<button>登陆</button>
+					<span>用户名：</span><input type="text" ng-model="username" placeholder="用户名">
+					<span>密码：</span><input type="password" ng-model="password" placeholder="密码">
+					<button ng-click="login()">登录</button>
 				</div>
 			</div>
 		</div>
@@ -187,12 +244,30 @@
             <button ng-click="clearGoods()">清空</button>
             <span>总价：￥ </span>
             <span>{{ totalPrice() }}</span>
-            <button ng-click="ProcessShow=!ProcessShow">结算</button>        
+            <button ng-click="ProcessShow=!ProcessShow">{{ totalQuantity()?'去结算':'购物车为空' }}</button>        
 			<div ng-show="ProcessShow">
 				<span>选购流程</span>
 				<div ng-show="!processIndex">
 					<h3>第一步 确定洗衣清单</h3>
 					<button  ng-click="processIndex=1">下一步</button>
+                    <table>
+                        <tr>
+                            <th>商品</th>
+                            <th></th>
+                            <th>数量</th>
+                            <th></th>
+                            <th>单价</th>
+                            <th>删除</th>
+                        </tr>
+                        <tr ng-repeat="item in cart">
+                            <td>{{ item.name }}</td>
+                            <td><button href="" ng-click="decreaseGoods($index)">-</button></td>
+                            <td>{{ item.quantity }}</td>
+                            <td><button href="" ng-click="increaseGoods($index)">+</button></td>
+                            <td>￥ {{ item.price }}</td>
+                            <td><button ng-click="removeGoods($index)">X</button></td>
+                        </tr>
+                    </table>
 				</div>
 				<div ng-show="processIndex==1">
 					<h3>第二步 确认个人信息</h3>

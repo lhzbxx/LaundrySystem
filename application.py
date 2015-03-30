@@ -18,6 +18,13 @@ app.config.update(dict(
     PASSWORD='default'
 ))
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
+
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
 
@@ -29,19 +36,10 @@ def before_request():
 def teardown_request(exception):
     g.db.close()
 
-@app.route('/')
-def welcome():
-    if session.get('logged_in'):
-        return redirect(url_for('homePage'))
-    else:
-        return redirect(url_for('login'))
-
 @app.route('/goodsList')
 def goodsList():
     goods = query_db("select * from goods")
-    return jsonify({"goods": goods}), 200, \
-    { 'Access-Control-Allow-Origin': '*', \
-      'Access-Control-Allow-Methods' : 'GET' }
+    return jsonify({"goods": goods})
 
 # 简化sqlite3的查询方式。
 def query_db(query, args=(), one=False):
@@ -52,22 +50,43 @@ def query_db(query, args=(), one=False):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    error_l = None
-    if request.method == 'POST':
-        user = query_db('select * from user where username = ?', [request.form['username']], one=True)
-        if user is None:
-            error_l = u"用户名不存在。"
+    post = request.get_json()
+    username = post.get('username')
+    password = post.get('password')
+    user = query_db('select * from user where name = ?', [username], one=True)
+    if user is None:
+        error = u"用户名不存在。"
+    else:
+        if password != user['passwd']:
+            error = u"密码不正确。"
         else:
-            if request.form['password'] != user['password']:
-                error_l = u"密码不正确。"
-            else:
-                session['username'] = request.form['username']
-                session['logged_in'] = True;
-                return redirect(url_for('welcome'));
-        # 注册新用户。
-        # g.db.execute('insert into user (username, password) values (?, ?)', [request.form['username'], request.form['password']])
-        # g.db.commit()
-    return render_template("welcome.html", error_l = error_l)
+            return jsonify({"msg": "YES"})
+    return jsonify({"msg": "NO"})
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    post = request.get_json()
+    username = post.get('username')
+    password = post.get('password')
+    phonenum = post.get('phonenum')
+    address = post.get('address')
+    user = query_db('select * from user where name = ?', [username], one=True)
+    if user is not None:
+        error = u"用户名重复。"
+        return jsonify({"msg": "NO"})
+    else:
+        g.db.execute('insert into user (name, passwd, phone, addr, time) values (?, ?, ?, ?, ?)', [username, password, phonenum, address, time.time()])
+        g.db.commit()
+        return jsonify({"msg": "YES"})
+
+@app.route('/feedback', methods=['GET', 'POST'])
+def feedback():
+    post = request.get_json()
+    contact = post.get('contact')
+    content = post.get('content')
+    g.db.execute('insert into advice (contact, content, time) values (?, ?, ?)', [contact, content, time.time()])
+    g.db.commit()
+    return jsonify({"msg": "YES"})
 
 @app.route('/refresh')
 def refresh():

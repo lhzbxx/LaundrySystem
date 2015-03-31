@@ -53,58 +53,7 @@
 		            <li ng-show="registerUser"><a href="">注销</a></li>
 	          	</ul>
 	          	<ul class="nav navbar-nav navbar-right">
-		            <li ng-mouseenter="CartShow=1" ng-mouseleave="CartShow=0">
-		            	<a href=""><span class="glyphicon glyphicon-shopping-cart"></span> {{ totalQuantity() }} 件衣物 共<span class="glyphicon glyphicon-yen"></span> {{ totalPrice() }} </a>
-		                <div ng-show="CartShow">
-					        <table>
-					            <tr ng-repeat="item in cart">
-					                <td>{{ item.name }}</td>
-					                <td><button href="" ng-click="decreaseGoods($index)">-</button></td>
-					                <td>{{ item.quantity }}</td>
-					                <td><button href="" ng-click="increaseGoods($index)">+</button></td>
-					                <td><i class="ui-icon-rmb"></i> {{ item.price }}</td>
-					                <td><button ng-click="removeGoods($index)">X</button></td>
-					            </tr>
-					        </table>
-					        <button ng-click="clearGoods()">清空</button>
-					        <span>总价：<span class="glyphicon glyphicon-yen"></span> </span>
-					        <span>{{ totalPrice() }}</span>
-					        <button ng-click="ProcessShow=!ProcessShow">{{ totalQuantity()?'去结算':'购物车为空' }}</button>        
-							<div ng-show="ProcessShow">
-								<span>选购流程</span>
-								<div ng-show="!processIndex">
-									<h3>第一步 确定洗衣清单</h3>
-									<button  ng-click="processIndex=1">下一步</button>
-					                <table>
-					                    <tr>
-					                        <th>商品</th>
-					                        <th></th>
-					                        <th>数量</th>
-					                        <th></th>
-					                        <th>单价</th>
-					                        <th>删除</th>
-					                    </tr>
-					                    <tr ng-repeat="item in cart">
-					                        <td>{{ item.name }}</td>
-					                        <td><button href="" ng-click="decreaseGoods($index)">-</button></td>
-					                        <td>{{ item.quantity }}</td>
-					                        <td><button href="" ng-click="increaseGoods($index)">+</button></td>
-					                        <td><i class="ui-icon-rmb"></i> {{ item.price }}</td>
-					                        <td><button ng-click="removeGoods($index)">X</button></td>
-					                    </tr>
-					                </table>
-								</div>
-								<div ng-show="processIndex==1">
-									<h3>第二步 确认个人信息</h3>
-									<button ng-click="processIndex=2">下一步</button>
-								</div>
-								<div ng-show="processIndex==2">
-									<h3>第三步 选择支付方式</h3>
-									<button ng-click="processIndex=0;ProcessShow=0;">下一步</button>
-								</div>
-							</div>
-						</div>
-					</li>
+		            <li ng-mouseenter="CartShow=1" ng-mouseleave="CartShow=0"><a href=""><span class="glyphicon glyphicon-shopping-cart"></span> {{ totalQuantity() }} 件衣物 共<span class="glyphicon glyphicon-yen"></span> {{ totalPrice() }} </a></li>
 	          	</ul>
 	        </div>
       	</div>
@@ -136,7 +85,54 @@
     <div ng-controller="HistoryController">
     </div>
 	
-
+    <div ng-show="CartShow">
+        <table>
+            <tr ng-repeat="item in cart">
+                <td>{{ item.name }}</td>
+                <td><button href="" ng-click="decreaseGoods($index)">-</button></td>
+                <td>{{ item.quantity }}</td>
+                <td><button href="" ng-click="increaseGoods($index)">+</button></td>
+                <td><i class="ui-icon-rmb"></i> {{ item.price }}</td>
+                <td><button ng-click="removeGoods($index)">X</button></td>
+            </tr>
+        </table>
+        <button class="btn btn-warning" ng-click="clearGoods()">清空</button>
+        <span class="label label-info">总价 <span class="glyphicon glyphicon-yen"></span>{{ totalPrice() }}</span>
+        <button class="btn btn-success" ng-click="ProcessShow=!ProcessShow">{{ totalQuantity()?'去结算':'购物车为空' }}</button>        
+		<div ng-show="ProcessShow">
+			<span>选购流程</span>
+			<div ng-show="!processIndex">
+				<h3>第一步 确定洗衣清单</h3>
+				<button  ng-click="processIndex=1">下一步</button>
+                <table>
+                    <tr>
+                        <th>商品</th>
+                        <th></th>
+                        <th>数量</th>
+                        <th></th>
+                        <th>单价</th>
+                        <th>删除</th>
+                    </tr>
+                    <tr ng-repeat="item in cart">
+                        <td>{{ item.name }}</td>
+                        <td><button href="" ng-click="decreaseGoods($index)">-</button></td>
+                        <td>{{ item.quantity }}</td>
+                        <td><button href="" ng-click="increaseGoods($index)">+</button></td>
+                        <td><i class="ui-icon-rmb"></i> {{ item.price }}</td>
+                        <td><button ng-click="removeGoods($index)">X</button></td>
+                    </tr>
+                </table>
+			</div>
+			<div ng-show="processIndex==1">
+				<h3>第二步 确认个人信息</h3>
+				<button ng-click="processIndex=2">下一步</button>
+			</div>
+			<div ng-show="processIndex==2">
+				<h3>第三步 选择支付方式</h3>
+				<button ng-click="processIndex=0;ProcessShow=0;">下一步</button>
+			</div>
+		</div>
+	</div>
 
     <div class="container" style="width: 970px" ng-controller="GoodsListController">
 

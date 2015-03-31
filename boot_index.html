@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="LuHao">
+
+    <!-- Note there is no responsive meta tag here -->
+
+    <link rel="icon" href="img/favicon.ico">
+
+    <title>洗衣中心</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="non-responsive.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    	<script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    	<script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+    	body { padding-top: 50px; }
+    	.navbar-brand { padding-right: 150px; }
+    </style>
+
+  	</head>
+
+<body ng-app="LaundrySystem" ng-controller="ShoppingCartController">
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+      	<div class="container" style="width: 970px">
+	        <div class="navbar-header">
+	          	<a class="navbar-brand" href="#">洗衣中心</a>
+	        </div>
+	        <div id="navbar">
+	          	<ul class="nav navbar-nav navbar-center">
+		            <li><a href="">历史订单</a></li>
+		            <li ng-show="!registerUser" ng-click="LoginShow=1"><a href="">登录</a></li>
+		            <li ng-show="!registerUser" ng-click="SignupShow=1"><a href="">注册</a></li>
+		            <li ng-show="registerUser"><a href="">用户名</a></li>
+		            <li ng-show="registerUser"><a href="">设置</a></li>
+		            <li ng-show="registerUser"><a href="">注销</a></li>
+	          	</ul>
+	          	<ul class="nav navbar-nav navbar-right">
+		            <li ng-mouseenter="CartShow=1" ng-mouseleave="CartShow=0">
+		            	<a href=""><span class="glyphicon glyphicon-shopping-cart"></span> {{ totalQuantity() }} 件衣物 共<span class="glyphicon glyphicon-yen"></span> {{ totalPrice() }} </a>
+		                <div ng-show="CartShow">
+					        <table>
+					            <tr ng-repeat="item in cart">
+					                <td>{{ item.name }}</td>
+					                <td><button href="" ng-click="decreaseGoods($index)">-</button></td>
+					                <td>{{ item.quantity }}</td>
+					                <td><button href="" ng-click="increaseGoods($index)">+</button></td>
+					                <td><i class="ui-icon-rmb"></i> {{ item.price }}</td>
+					                <td><button ng-click="removeGoods($index)">X</button></td>
+					            </tr>
+					        </table>
+					        <button ng-click="clearGoods()">清空</button>
+					        <span>总价：<span class="glyphicon glyphicon-yen"></span> </span>
+					        <span>{{ totalPrice() }}</span>
+					        <button ng-click="ProcessShow=!ProcessShow">{{ totalQuantity()?'去结算':'购物车为空' }}</button>        
+							<div ng-show="ProcessShow">
+								<span>选购流程</span>
+								<div ng-show="!processIndex">
+									<h3>第一步 确定洗衣清单</h3>
+									<button  ng-click="processIndex=1">下一步</button>
+					                <table>
+					                    <tr>
+					                        <th>商品</th>
+					                        <th></th>
+					                        <th>数量</th>
+					                        <th></th>
+					                        <th>单价</th>
+					                        <th>删除</th>
+					                    </tr>
+					                    <tr ng-repeat="item in cart">
+					                        <td>{{ item.name }}</td>
+					                        <td><button href="" ng-click="decreaseGoods($index)">-</button></td>
+					                        <td>{{ item.quantity }}</td>
+					                        <td><button href="" ng-click="increaseGoods($index)">+</button></td>
+					                        <td><i class="ui-icon-rmb"></i> {{ item.price }}</td>
+					                        <td><button ng-click="removeGoods($index)">X</button></td>
+					                    </tr>
+					                </table>
+								</div>
+								<div ng-show="processIndex==1">
+									<h3>第二步 确认个人信息</h3>
+									<button ng-click="processIndex=2">下一步</button>
+								</div>
+								<div ng-show="processIndex==2">
+									<h3>第三步 选择支付方式</h3>
+									<button ng-click="processIndex=0;ProcessShow=0;">下一步</button>
+								</div>
+							</div>
+						</div>
+					</li>
+	          	</ul>
+	        </div>
+      	</div>
+    </nav>
+
+
+	<div ng-show="!registerUser">
+		<div ng-controller="SignupController">
+			<div ng-show="SignupShow">
+				<span>用户名：</span><input required ng-model="username" type="text" placeholder="用户名">
+				<span>密码：</span><input required ng-model="password" type="password" placeholder="密码">
+				<span>联系方式：</span><input required ng-model="phonenum" type="text" placeholder="联系方式">
+				<span>地址：</span>
+                <select ng-model="sectionSelect"><option>西区</option><option>东区</option></select>
+                <select ng-show="sectionSelect=='西区'"><option ng-selected="buildID='X11'">X11</option><option ng-selected="buildID='X13'">X13</option><option ng-selected="buildID='X14'">X14</option><option ng-selected="buildID='X15'">X15</option></select>
+                <select ng-show="sectionSelect=='东区'"><option ng-selected="buildID='D11'">D11</option><option ng-selected="buildID='D13'">D13</option><option ng-selected="buildID='D14'">D14</option><option ng-selected="buildID='D15'">D15</option></select>
+				<button  ng-click="signup()">注册</button>
+			</div>
+		</div>
+		<div ng-controller="LoginController">
+			<div ng-show="LoginShow">
+				<span>用户名：</span><input type="text" ng-model="username" placeholder="用户名">
+				<span>密码：</span><input type="password" ng-model="password" placeholder="密码">
+				<button ng-click="login()">登录</button>
+			</div>
+		</div>
+	</div>
+
+    <div ng-controller="HistoryController">
+    </div>
+	
+
+
+    <div class="container" style="width: 970px" ng-controller="GoodsListController">
+
+      	<div class="page-header">
+        	<h1>全新的O2O洗衣服务</h1>
+        	<p class="lead">干净、整洁、便捷。<br>只需三步。<br>美妙的生活从此开始。</p>
+      	</div>
+
+		<h3>洗衣清单</h3>
+		<div class="row">
+			<div class="col-xs-4" ng-repeat="item in items">
+				<div class="panel panel-default">
+					<div class="panel-body">
+	                    <img style="width: 270px;" ng-src="img\{{ item.pic }}" alt="{{ item.name }}">
+					</div>
+					<div class="panel-footer">
+	                    <h3 class="label label-danger">{{ item.name }}</h3>
+	                    <span class="label label-primary"><span class="glyphicon glyphicon-yen"></span>{{ item.price }}</span>
+	                    <button class="btn btn-success" ng-click="addGoods(item.name, item.price)">加入购物车</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+
+    <script type="text/javascript" src="static\angular.min.js"></script>
+    <script type="text/javascript" src="static\angular-cookies.min.js"></script>
+    <script type="text/javascript">
+
+        var app = angular.module('LaundrySystem', ["ngCookies"])
+
+        app.controller('ShoppingCartController', function ($scope, $cookieStore) {
+			ProcessShow = 0;
+			processIndex = 0;
+            CartShow = 0;
+            registerUser = 0;
+            currentUser = "鲁浩";
+			$scope.cart = $cookieStore.get("cart") || [];
+
+            $scope.removeGoods = function (index) {
+                $scope.cart.splice(index, 1);
+				$cookieStore.put("cart", $scope.cart);
+            };
+
+            $scope.increaseGoods = function (index) {
+                $scope.cart[index].quantity += 1;
+				$cookieStore.put("cart", $scope.cart);
+            }
+
+            $scope.decreaseGoods = function (index) {
+                $scope.cart[index].quantity -= 1;
+                if ($scope.cart[index].quantity == 0) {
+                    $scope.cart.splice(index, 1);
+                }
+				$cookieStore.put("cart", $scope.cart);
+            }
+
+            $scope.totalQuantity = function () {
+                return $scope.cart.length;
+            }
+
+            $scope.totalPrice = function () {
+                var total = 0;
+                for (var i in $scope.cart) {
+                    total += $scope.cart[i].quantity * $scope.cart[i].price;
+                }
+                return total;
+            };
+
+            $scope.addGoods = function (n, p) {
+                for (var i in $scope.cart) {
+                    if ($scope.cart[i].name == n) {
+                        $scope.cart[i].quantity += 1;
+                        $cookieStore.put("cart", $scope.cart);
+                        return;
+                    }
+                }
+                $scope.cart.push({name: n, quantity: 1, price: p});
+                $cookieStore.put("cart", $scope.cart);
+            };
+
+            $scope.clearGoods = function () {
+                $scope.cart.splice(0, $scope.cart.length);
+				$cookieStore.put("cart", $scope.cart);
+            };
+        });
+
+        app.controller('GoodsListController', function ($scope, $http) {
+            $http.get('http://localhost:5000/goodsList')
+            .success(function(data, status, headers, config) {
+                $scope.items = data.goods;
+            })
+            .error(function(data, status, headers, config) {
+                alert("网络繁忙！");
+            });
+        });
+
+        app.controller('AddressController', function ($scope) {
+            AddrShow = 0;
+            Regions = 0;
+            region = 1;
+            // var currentAddr = $cookieStore.get('currentAddr');
+            // $scope.confirmAddr = function(n) {
+            //     $cookieStore.put('currentAddr', n);
+            // }
+        });
+
+        app.controller('HistoryController', function ($scope) {
+
+        });
+
+        app.controller('SignupController', function ($scope, $http) {
+            SignupShow = 0;
+            seDir = 0;
+            buildID = null;
+            $scope.signup = function () {
+                alert(JSON.stringify({'username': $scope.username, 'password': $scope.password, "phonenum": $scope.phonenum, "address": $scope.sectionSelect + $scope.buildID}));
+                $http.post('http://localhost:5000/signup', JSON.stringify({'username': $scope.username, 'password': $scope.password, "phonenum": $scope.phonenum, "address": $scope.sectionSelect + $scope.buildID}))
+                .success(function(data, status, headers, config) {
+                    if (data.msg == "YES") {
+                        alert("注册成功！");
+                    } else{
+                        alert("注册失败！");
+                    };
+                })
+                .error(function(data, status, headers, config) {
+                    alert("网络繁忙！");
+                })
+            }
+        });
+
+        app.controller('LoginController', function ($scope, $http) {
+            LoginShow = 0;
+            $scope.login = function () {
+                $http.post('http://localhost:5000/login', JSON.stringify({'username': $scope.username, 'password': $scope.password}))
+                .success(function(data, status, headers, config) {
+                    if (data.msg == "YES") {
+                        alert("登录成功！");
+                    } else{
+                        alert("用户名或密码错误！");
+                    };
+                })
+                .error(function(data, status, headers, config) {
+                    alert("网络繁忙！");
+                })
+            }
+        });
+
+        app.controller('FeedBackController', function ($scope, $http) {
+            FeedBackShow = 0;
+            $scope.fbUpload = function () {
+                $http.post('http://localhost:5000/feedback', JSON.stringify({'contact': $scope.fbContact, 'content': $scope.fbContent}))
+                .success(function(data, status, headers, config) {
+                    if (data.msg == "YES") {
+                        alert("提交成功！");
+                    }
+                })
+                .error(function(data, status, headers, config) {
+                    alert("网络繁忙！");
+                })
+            }
+        });
+
+    </script>
+</body>
+</html>

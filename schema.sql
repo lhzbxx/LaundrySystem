@@ -30,6 +30,7 @@ drop table if exists cart;
 create table cart (
     id integer primary key autoincrement,
     userid integer not null,
+	contact text not null,
     list text not null,
     note text,
     comment text,
@@ -37,5 +38,8 @@ create table cart (
     deliver text not null,
     pickup text not null,
     dtime integer not null,
-    ptime integer not null
+    ptime integer not null,
+	wtime integer,
+	pid integer not null,
+	state integer default 0
 );

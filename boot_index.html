@@ -59,40 +59,6 @@
       	</div>
     </nav>
 
-
-	<div ng-show="!registerUser">
-		<div ng-controller="SignupController">
-			<div style="position:fixed;margin:auto;left:0;right:0;top:0;bottom:0;width:600px; height:350px;" ng-show="SignupShow">
-				<span>用户名：</span><input required ng-model="username" type="text" placeholder="用户名">
-				<span>密码：</span><input required ng-model="password" type="password" placeholder="密码">
-				<span>联系方式：</span><input required ng-model="phonenum" type="text" placeholder="联系方式">
-				<span>地址：</span>
-                <select ng-model="sectionSelect"><option>西区</option><option>东区</option></select>
-                <select ng-show="sectionSelect=='西区'"><option ng-selected="buildID='X11'">X11</option><option ng-selected="buildID='X13'">X13</option><option ng-selected="buildID='X14'">X14</option><option ng-selected="buildID='X15'">X15</option></select>
-                <select ng-show="sectionSelect=='东区'"><option ng-selected="buildID='D11'">D11</option><option ng-selected="buildID='D13'">D13</option><option ng-selected="buildID='D14'">D14</option><option ng-selected="buildID='D15'">D15</option></select>
-				<button  ng-click="signup()">注册</button>
-			</div>
-		</div>
-		<div ng-controller="LoginController">
-			<div style="position:fixed;margin:auto;left:0;text-align:center;right:0;top:0;bottom:0;width:600px; height:350px;background-color:grey;" ng-show="LoginShow">
-				<div class="input-group input-group-lg">
-					<span class="input-group-addon glyphicon glyphicon-user"> 用户</span>
-					<input type="text" ng-model="username" class="form-control" placeholder="Username">
-				</div>
-				<div class="input-group input-group-lg">
-					</span><span class="input-group-addon glyphicon glyphicon-text-color"> 密码</span>
-					<input type="text" ng-model="password" class="form-control" placeholder="Password">
-				</div>
-				<button class="btn btn-primary btn-lg" ng-click="login()">登录</button>
-			</div>
-		</div>
-	</div>
-
-    <div style="position:fixed;margin:auto;left:0;right:0;top:0;bottom:0;width:600px; height:350px;background-color:grey;" ng-controller="HistoryController" ng-show="HistoryShow">
-		<ul class="list-group">
-			<li class="list-group-item list-group-item-success">订单号：清单：</li>
-		</div>
-	</div>
 	
     <div ng-show="CartShow">
         <table>
@@ -165,6 +131,60 @@
 				</div>
 			</div>
 		</div>
+
+	<div ng-show="!registerUser">
+		<div ng-controller="SignupController">
+			<div style="position:fixed;margin:auto;left:0;right:0;top:0;bottom:0;width:600px; height:350px;" ng-show="SignupShow">
+				
+				<span>用户名：</span><input required ng-model="username" type="text" placeholder="用户名">
+				<span>密码：</span><input required ng-model="password" type="password" placeholder="密码">
+				<span>联系方式：</span><input required ng-model="phonenum" type="text" placeholder="联系方式">
+				<span>地址：</span>
+                <select ng-model="sectionSelect"><option>西区</option><option>东区</option></select>
+                <select ng-show="sectionSelect=='西区'"><option ng-selected="buildID='X11'">X11</option><option ng-selected="buildID='X13'">X13</option><option ng-selected="buildID='X14'">X14</option><option ng-selected="buildID='X15'">X15</option></select>
+                <select ng-show="sectionSelect=='东区'"><option ng-selected="buildID='D11'">D11</option><option ng-selected="buildID='D13'">D13</option><option ng-selected="buildID='D14'">D14</option><option ng-selected="buildID='D15'">D15</option></select>
+				<button  ng-click="signup()">注册</button>
+			</div>
+		</div>
+		<div ng-controller="LoginController">
+			<div style="position:fixed;margin:auto;left:0;text-align:center;right:0;top:0;bottom:0;width:450px; height:300px;background-color:grey;" ng-show="LoginShow">
+				<form class="form-horizontal">
+					<div class="form-group form-group-lg">
+						<label for="inputEmail3" class="col-xs-2 control-label control-label-lg"><span class="glyphicon glyphicon-user"></span></label>
+						<div class="col-xs-10">
+							<input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+						</div>
+					</div>
+					<div class="form-group form-group-lg">
+						<label for="inputPassword3" class="col-xs-2 control-label">Password</label>
+						<div class="col-xs-10">
+							<input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+						</div>
+					</div>
+					<div class="form-group form-group-lg">
+					<div class="col-xs-offset-3 col-xs-6">
+						<button type="submit" class="btn btn-primary btn-lg">登录</button>
+					</div>
+					</div>
+				</form>
+				<div class="input-group input-group-lg">
+					<span class="input-group-addon glyphicon glyphicon-user"> 用户</span>
+					<input type="text" ng-model="username" class="form-control" placeholder="Username">
+				</div>
+				<div class="input-group input-group-lg">
+					</span><span class="input-group-addon glyphicon glyphicon-text-color"> 密码</span>
+					<input type="text" ng-model="password" class="form-control" placeholder="Password">
+				</div>
+				<button class="btn btn-primary btn-lg" ng-click="login()">登录</button>
+			</div>
+		</div>
+	</div>
+
+    <div style="position:fixed;margin:auto;left:0;right:0;top:0;bottom:0;width:600px; height:350px;background-color:grey;" ng-controller="HistoryController" ng-show="HistoryShow">
+		<ul class="list-group">
+			<li class="list-group-item list-group-item-success">订单号：清单：</li>
+		</div>
+	</div>
 
     </div> <!-- /container -->
 

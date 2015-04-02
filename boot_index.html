@@ -45,9 +45,9 @@
 	        </div>
 	        <div id="navbar">
 	          	<ul class="nav navbar-nav navbar-center">
-		            <li><a href="" ng-click="HistoryShow=1">历史订单</a></li>
-		            <li ng-show="!registerUser" ng-click="LoginShow=1"><a href="">登录</a></li>
-		            <li ng-show="!registerUser" ng-click="SignupShow=1"><a href="">注册</a></li>
+		            <li ng-click="HistoryShow=!HistoryShow"><a href="">历史订单</a></li>
+		            <li ng-show="!registerUser" ng-click="LoginShow=!LoginShow"><a href="">登录</a></li>
+		            <li ng-show="!registerUser" ng-click="SignupShow=!SignupShow"><a href="">注册</a></li>
 		            <li ng-show="registerUser"><a href="">用户名</a></li>
 		            <li ng-show="registerUser"><a href="">设置</a></li>
 		            <li ng-show="registerUser"><a href="">注销</a></li>
@@ -60,15 +60,15 @@
     </nav>
 
 	
-    <div ng-show="CartShow">
+    <div style="position:fixed;left:70%;top:50px;width:250px;height:auto;border:2px solid;" ng-show="CartShow">
         <table>
             <tr ng-repeat="item in cart">
                 <td>{{ item.name }}</td>
-                <td><button href="" ng-click="decreaseGoods($index)">-</button></td>
+                <td><button type="button" class="close" data-dismiss="alert" aria-label="Close" ng-click="decreaseGoods($index)">-</button></td>
                 <td>{{ item.quantity }}</td>
-                <td><button href="" ng-click="increaseGoods($index)">+</button></td>
+                <td><button type="button" class="close" data-dismiss="alert" aria-label="Close" ng-click="increaseGoods($index)">+</button></td>
                 <td><i class="ui-icon-rmb"></i> {{ item.price }}</td>
-                <td><button ng-click="removeGoods($index)">X</button></td>
+                <td><button type="button" class="close" data-dismiss="alert" aria-label="Close" ng-click="removeGoods($index)"><span aria-hidden="true">&times;</span></button></td>
             </tr>
         </table>
         <button class="btn btn-warning" ng-click="clearGoods()">清空</button>
@@ -134,7 +134,7 @@
 
 	<div ng-show="!registerUser">
 		<div ng-controller="SignupController">
-			<div style="position:fixed;margin:auto;left:0;right:0;top:0;bottom:0;width:600px; height:350px;" ng-show="SignupShow">
+			<div style="position:fixed;margin:auto;left:0;right:0;top:0;bottom:0;width:600px;height:350px;" ng-show="SignupShow">
 				
 				<span>用户名：</span><input required ng-model="username" type="text" placeholder="用户名">
 				<span>密码：</span><input required ng-model="password" type="password" placeholder="密码">
@@ -146,36 +146,29 @@
 				<button  ng-click="signup()">注册</button>
 			</div>
 		</div>
-		<div ng-controller="LoginController">
+		<div>
 			<div style="position:fixed;margin:auto;left:0;text-align:center;right:0;top:0;bottom:0;width:450px; height:300px;background-color:grey;" ng-show="LoginShow">
+				<button type="button" class="close" style="padding:10px" data-dismiss="alert" ng-click="LoginShow=!LoginShow" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<br><h2>登录</h2><br>
 				<form class="form-horizontal">
 					<div class="form-group form-group-lg">
-						<label for="inputEmail3" class="col-xs-2 control-label control-label-lg"><span class="glyphicon glyphicon-user"></span></label>
-						<div class="col-xs-10">
-							<input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+						<label for="usernameInput" class="col-xs-3 control-label"><span class="glyphicon glyphicon-lg glyphicon-user"></span></label>
+						<div class="col-xs-7">
+							<input type="text" ng-model="username" class="form-control" id="usernameInput" placeholder="用户名">
 						</div>
 					</div>
 					<div class="form-group form-group-lg">
-						<label for="inputPassword3" class="col-xs-2 control-label">Password</label>
-						<div class="col-xs-10">
-							<input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+						<label for="passwordInput" class="col-xs-3 control-label"><span class="glyphicon glyphicon-text-color"></span></label>
+						<div class="col-xs-7">
+							<input type="password" ng-model="password" class="form-control" id="passwordInput" placeholder="密码">
 						</div>
 					</div>
 					<div class="form-group form-group-lg">
-					<div class="col-xs-offset-3 col-xs-6">
-						<button type="submit" class="btn btn-primary btn-lg">登录</button>
-					</div>
+						<div class="col-xs-offset-3 col-xs-6">
+							<button type="submit" class="btn btn-primary btn-lg" ng-click="login()">登录</button>
+						</div>
 					</div>
 				</form>
-				<div class="input-group input-group-lg">
-					<span class="input-group-addon glyphicon glyphicon-user"> 用户</span>
-					<input type="text" ng-model="username" class="form-control" placeholder="Username">
-				</div>
-				<div class="input-group input-group-lg">
-					</span><span class="input-group-addon glyphicon glyphicon-text-color"> 密码</span>
-					<input type="text" ng-model="password" class="form-control" placeholder="Password">
-				</div>
-				<button class="btn btn-primary btn-lg" ng-click="login()">登录</button>
 			</div>
 		</div>
 	</div>
@@ -183,7 +176,7 @@
     <div style="position:fixed;margin:auto;left:0;right:0;top:0;bottom:0;width:600px; height:350px;background-color:grey;" ng-controller="HistoryController" ng-show="HistoryShow">
 		<ul class="list-group">
 			<li class="list-group-item list-group-item-success">订单号：清单：</li>
-		</div>
+		</ul>
 	</div>
 
     </div> <!-- /container -->
@@ -205,13 +198,28 @@
 
         var app = angular.module('LaundrySystem', ["ngCookies"])
 
-        app.controller('ShoppingCartController', function ($scope, $cookieStore) {
+        app.controller('ShoppingCartController', function ($scope, $cookieStore, $http) {
 			ProcessShow = 0;
 			processIndex = 0;
             CartShow = 0;
             registerUser = 0;
             currentUser = "鲁浩";
 			$scope.cart = $cookieStore.get("cart") || [];
+
+            LoginShow = 0;
+            $scope.login = function () {
+                $http.post('http://localhost:5000/login', JSON.stringify({'username': $scope.username, 'password': $scope.password}))
+                .success(function(data, status, headers, config) {
+                    if (data.msg == "YES") {
+                        alert("登录成功！");
+                    } else{
+                        alert("用户名或密码错误！");
+                    };
+                })
+                .error(function(data, status, headers, config) {
+                    alert("网络繁忙！");
+                })
+            }
 
             $scope.removeGoods = function (index) {
                 $scope.cart.splice(index, 1);
@@ -297,23 +305,6 @@
                         alert("注册成功！");
                     } else{
                         alert("注册失败！");
-                    };
-                })
-                .error(function(data, status, headers, config) {
-                    alert("网络繁忙！");
-                })
-            }
-        });
-
-        app.controller('LoginController', function ($scope, $http) {
-            LoginShow = 0;
-            $scope.login = function () {
-                $http.post('http://localhost:5000/login', JSON.stringify({'username': $scope.username, 'password': $scope.password}))
-                .success(function(data, status, headers, config) {
-                    if (data.msg == "YES") {
-                        alert("登录成功！");
-                    } else{
-                        alert("用户名或密码错误！");
                     };
                 })
                 .error(function(data, status, headers, config) {
